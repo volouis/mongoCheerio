@@ -1,0 +1,9 @@
+.jumbotron{
+    background-image: url("./image/background_home.jpg");
+    opacity: .4;
+}
+
+.card{
+    max-width: 90%;
+    margin: auto;
+}
