@@ -18,6 +18,27 @@ $.getJSON("/articles/saved", function(data) {
 $("body").on("click", "button.noteBtn" ,function(){
     $(".modal-title").text($(this).attr("data-title"))
     $(".modal-title").attr("data-idVal", $(this).attr("data-val"))
+
+    $.ajax({
+        method: "GET",
+        url: "/preNote/" + $(this).attr("data-val")
+    }).then(function(data){
+        if(typeof data.note !== 'undefined'){
+            $.ajax({
+                method: "GET",
+                url: "/note/" + data.note
+            }).then(function(data){
+                console.log(data)
+                $(".oldNotes").empty()
+                
+                var note = $(`<div style="border: 1px solid; border-radius: 5px; overflow:hidden;">`)
+                note.append(`<p style="text-align: center;">${data.body}</p>`)
+                note.append(`<button type="button" class="btn btn-danger" style="float:right">X</button>`)
+                
+                $(".oldNotes").append(note)
+            })
+        }
+    })
 })
 
 $("body").on("click", "button#deleteBtn" ,function(){
@@ -31,9 +52,14 @@ $("body").on("click", "button#deleteBtn" ,function(){
 })
 
 $("#addNotes").on("click", function(){
-    console.log($(".articleNotes").val());
-    console.log($(".modal-title").attr("data-idVal"))
-
-
+    $.ajax({
+        method: "POST",
+        url: "/artNote/" + $(".modal-title").attr("data-idVal"),
+        data: {
+            body: $(".articleNotes").val()
+        }
+    }).then(function(data) {
+        console.log("added note")
+    })
     $(".articleNotes").val("")
 })

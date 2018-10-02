@@ -63,6 +63,15 @@ app.get("/articles", function(req, res) {
     });
 });
 
+app.get("/note/:id", function(req, res){
+  db.Note.findOne(
+    {_id: req.params.id},
+  ).then(function(data) {
+    res.json(data)
+  })
+})
+
+
 app.post("/articles/:id", function(req, res){
   db.Article.updateOne(
     {_id: req.params.id},
@@ -84,6 +93,14 @@ app.get("/articles/saved", function(req, res){
     });
 })
 
+app.get("/preNote/:id", function(req,res){
+  db.Article.findOne({
+    _id: req.params.id
+  }).then(function(data){
+    res.json(data)
+  })
+})
+
 app.post("/saveDelete/:id", function(req, res){
   db.Article.updateOne(
     {_id: req.params.id},
@@ -91,6 +108,19 @@ app.post("/saveDelete/:id", function(req, res){
   ).then(function(data) {
     res.json("saved")
   })
+})
+
+app.post("/artNote/:id", function(req, res){
+  db.Note.create(req.body)
+    .then(function(dbNote){
+      return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+    })
+    .then(function(dbArticle) {
+      res.json(dbArticle);
+    })
+    .catch(function(err) {
+      res.json(err);
+    });
 })
 
 
