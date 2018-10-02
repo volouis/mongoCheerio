@@ -84,6 +84,17 @@ app.get("/articles/saved", function(req, res){
     });
 })
 
+app.post("/saveDelete/:id", function(req, res){
+  db.Article.updateOne(
+    {_id: req.params.id},
+    {$set: {Save: false}}
+  ).then(function(data) {
+    res.json("saved")
+  })
+})
+
+
+
 app.get("/", function(req, res) {
   res.send("Hello world");
 });
