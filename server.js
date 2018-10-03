@@ -64,7 +64,7 @@ app.get("/articles", function(req, res) {
 });
 
 app.get("/note/:id", function(req, res){
-  db.Note.findOne(
+  db.Note.find(
     {_id: req.params.id},
   ).then(function(data) {
     res.json(data)
@@ -123,7 +123,26 @@ app.post("/artNote/:id", function(req, res){
     });
 })
 
+app.post("/deleteArtNote/:id", function(req, res){
+  db.Article.updateOne(
+    {_id: req.params.id},
+    {$unset: {note: 1}}
+  ).then(function(db){
+    res.json("remove note")
+  }).catch(function(err) {
+    res.json(err);
+  });
+})
 
+app.post("/deleteNote/:id", function(req, res){
+  db.Note.remove(
+    {_id: req.params.id}
+  ).then(function(db){
+    res.json("remove note")
+  }).catch(function(err){
+    res.json(err);
+  })
+})
 
 app.get("/", function(req, res) {
   res.send("Hello world");

@@ -1,0 +1,19 @@
+#deleteNote{
+    position: absolute;
+    right: 10px;
+    top: 0;
+}
+
+.noteContain{
+    overflow: auto;
+}
+
+.jumbotron{
+    background-image: url("./image/background_home.jpg");
+    opacity: .4;
+}
+
+.card{
+    max-width: 90%;
+    margin: auto;
+}
