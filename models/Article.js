@@ -19,7 +19,7 @@ var ArticleSchema = new Schema({
     type: Boolean,
   },
   note: {
-    type: Schema.Types.ObjectId,
+    type: Array,
     ref: "Note"
   }
 });

@@ -24,18 +24,23 @@ $("body").on("click", "button.noteBtn" ,function(){
         url: "/preNote/" + $(this).attr("data-val")
     }).then(function(data){
         $(".oldNotes").empty();
-        if(typeof data.note !== 'undefined'){
-            $.ajax({
-                method: "GET",
-                url: "/note/" + data.note
-            }).then(function(dat){
-                console.log(dat)
-                var note = $(`<div class="noteContain" style="border: 1px solid; border-radius: 5px;">`)
-                note.append(`<p style="text-align: center;">${dat[0].body}</p>`)
-                note.append(`<button id="deleteNote" type="button" class="btn btn-danger" value=${dat[0]._id}>X</button>`)
-                
-                $(".oldNotes").append(note)
-            })
+        if(data.note.length !== 0){
+            for(var i = 0; i < data.note.length; i++){
+                $.ajax({
+                    method: "GET",
+                    url: "/note/" + data.note[i]
+                }).then(function(dat){
+                    if(dat.length !== 0){
+                        for(var i = 0; i < dat.length; i++){
+                            var note = $(`<div class="noteContain" id=${dat[i]._id} style="border: 1px solid; border-radius: 5px;">`)
+                            note.append(`<p style="text-align: center;">${dat[i].body}</p>`)
+                            note.append(`<button id="deleteNote" type="button" class="btn btn-danger" value=${dat[i]._id}>X</button>`)
+
+                            $(".oldNotes").append(note)
+                        }
+                    }
+                })
+            }
         }
     })
 })
@@ -64,13 +69,13 @@ $("#addNotes").on("click", function(){
 })
 
 $(".modal-content").on("click", "button#deleteNote", function(){
-    console.log($(".modal-title").attr("data-idval"))
+    var id = "#" + $(this).val()
 
     $.ajax({
         method:"POST",
         url: "/deleteNote/" + $(this).val()
     }).then(function(dat){
-        $(".oldNotes").empty();
+        $(id).remove();
     })
 
     // $.ajax({
