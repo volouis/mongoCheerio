@@ -17,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true}));
 app.use(express.static("public"));
 
 mongoose.connect("mongodb://localhost/TorontoStarSports");
+
 app.get("/scrape", function(req, res){
   axios.get("https://www.thestar.com/sports.html").then(function(response) {
     var $ = cheerio.load(response.data);
@@ -25,12 +26,30 @@ app.get("/scrape", function(req, res){
     var headline = [];
     var summary = [];
 
+    var everyT = [];
+
     $(".story__body a").each(function(i, element){
-      URL.push("https://www.thestar.com" + $(element).attr("href"));
+      var yourl = "https://www.thestar.com" + $(element).attr("href")
+      
+      db.Article.find({URL: yourl})
+        .then(function(data){
+          if(data.length === 0){
+            URL.push(yourl);
+          }
+        })
     })
 
     $(".story__headline").each(function(i, element){
-      headline.push($(element).text())
+      var head = $(element).text()
+
+      db.Article.find({Headline: head})
+        .then(function(data){
+          if(data.length === 0){
+            headline.push(head)
+          }
+        })
+
+
     })
 
     $(".story__abstract").each(function(i, element){
@@ -38,18 +57,18 @@ app.get("/scrape", function(req, res){
     })
 
 
+
+
+    var j = 0;
+
     for(var i = 0; i < summary.length; i++){
-      db.Article.create({
-        Headline: headline[i],
-        Summary:  summary[i],
-        URL: URL[i],
-        Save: false
-      }).then(function(dbArticle){
-      }).catch(function(err){
-        return res.json(err);
-      })
-    };
-    res.send(summary);
+      db.Article.find({Headline: headline[i]})
+        .then(function(dat){
+          if(dat.length === 0){
+            
+          }
+        })
+    }
   });
 });
 
@@ -144,9 +163,9 @@ app.post("/deleteNote/:id", function(req, res){
   })
 })
 
-app.get("/", function(req, res) {
-  res.send("Hello world");
-});
+// app.get("/", function(req, res) {
+//   res.send("Hello world");
+// });
 
 require("./public/htmlRoute.js")(app);
 

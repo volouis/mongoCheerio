@@ -31,7 +31,7 @@ $("#newArt").on("click", function(){
         method: "GET",
         url: "/scrape"
     }).then(function(data) {
-        $(".modal-body").append(`<p class=card-text>They are ${data.length} new articles</p>`)
+        $(".modal-body").append(`<p class=card-text>They are ${data} new articles</p>`)
     })
 })
 
