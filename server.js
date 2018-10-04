@@ -29,46 +29,49 @@ app.get("/scrape", function(req, res){
     var everyT = [];
 
     $(".story__body a").each(function(i, element){
-      var yourl = "https://www.thestar.com" + $(element).attr("href")
-      
-      db.Article.find({URL: yourl})
-        .then(function(data){
-          if(data.length === 0){
-            URL.push(yourl);
-          }
-        })
+      URL.push("https://www.thestar.com" + $(element).attr("href"));
     })
 
     $(".story__headline").each(function(i, element){
-      var head = $(element).text()
-
-      db.Article.find({Headline: head})
-        .then(function(data){
-          if(data.length === 0){
-            headline.push(head)
-          }
-        })
-
-
+      headline.push($(element).text())
     })
 
     $(".story__abstract").each(function(i, element){
       summary.push($(element).text())
     })
 
-
-
-
-    var j = 0;
-
     for(var i = 0; i < summary.length; i++){
-      db.Article.find({Headline: headline[i]})
-        .then(function(dat){
-          if(dat.length === 0){
-            
-          }
-        })
+      everyT.push({
+        Headline: headline[i],
+        Summary: summary[i],
+        URL: URL[i],
+        Save: false
+      })
     }
+    var count = 0;
+
+    db.Article.find({})
+      .then(function(data){
+        for(var i = 0; i < everyT.length; i++){
+          for(var j = 0; j < data.length; j++){
+            if(everyT[i].Headline === data[j].Headline){
+              everyT.splice(i, 1);
+              i--;
+              break;
+            }else if(j === (data.length - 1)){
+              count++;
+            }
+          }
+        }
+      }).then(function(dat){
+        db.Article.create(everyT)
+          .then(function(data){
+            console.log(data)
+          }).catch(function(err){
+            console.log(err)
+          })
+        res.json(count);
+      })
   });
 });
 

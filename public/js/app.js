@@ -35,6 +35,10 @@ $("#newArt").on("click", function(){
     })
 })
 
-$("addArt").on("click", function(){
+$("#closeBtn").on("click", function(){
+    location.reload();
+})
 
+$("#addArt").on("click", function(){
+    location.reload();
 })
